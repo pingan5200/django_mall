@@ -1,0 +1,21 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+所有订单
+{% endblock %}
+
+{% block content %}
+  <h1>所有订单</h1>
+
+  <div>
+    <ul>
+      {% for item in orders %}
+        <li>
+        {{item}}: {{ item.order.email }} {{ item.order.address }} {{ item.product }}
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+{% endblock %}

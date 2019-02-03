@@ -1,0 +1,105 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+  {{ product.name }}
+{% endblock %}
+
+{% block content %}
+<section class="section-content bg padding-y-sm">
+    <div class="container">
+    <div class="card">
+      <div class="card-body">
+      <div class="row">
+        <div class="col-md-3-24"> <strong>当前位置:</strong> </div> <!-- col.// -->
+        <nav class="col-md-18-24"> 
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url "shop:home" %}">主页</a></li>
+          
+          <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page"> {{ product.name }}</li>         
+          
+        </ol>  
+        </nav> <!-- col.// -->
+        
+      </div> <!-- row.// -->
+    </div> <!-- card-body .// -->
+  </div> <!-- card.// -->
+
+  <div class="row">
+      <div class="col-xl-10 col-md-9 col-sm-12">
+
+      <main class="card">
+        <div class="row no-gutters">
+          <aside class="col-sm-6 border-right">
+            <article class="gallery-wrap"> 
+            <div class="img-big-wrap">
+            <div> <a href="{{ product.image.url }}" data-fancybox="">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+            </a></div>
+            </div> <!-- slider-product.// -->
+            <div class="img-small-wrap"></div>
+            </article> <!-- gallery-wrap .end// -->
+          </aside>
+          <aside class="col-sm-6">
+            <article class="card-body">
+                <h3 class="title mb-3">{{ product.name }}</h3>
+
+                <div class="mb-3"> 
+                  <var class="price h3 text-warning"> 
+                    <span class="currency"> ￥</span><span class="num">{{ product.price }}</span>
+                  </var> 
+                </div> <!-- price-detail-wrap .// -->
+                <dl>
+                    <dt>商品描述：</dt>
+                    <dd><p>{{ product.description }} </p></dd>
+                </dl>
+                
+                <form action="{% url "cart:cart_add" product.id %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" class="btn  btn-outline-warning" value="添加购物车">
+                  </form>
+            </article>
+          </aside>
+        </div> <!-- row.// -->
+      </main> <!-- card.// -->
+    </div><!-- col // -->
+
+    <aside class="col-xl-2 col-md-3 col-sm-12">
+        
+        {% if re_products %}
+          <div class="card mt-3">
+            <div class="card-header">
+                你可能也喜欢
+            </div>
+            <div class="card-body row">
+              {% for p in re_products %}
+                
+                  <div class="col-md-12 col-sm-3">
+                    <figure class="item border-bottom mb-3">
+                        <a href="#" class="img-wrap"> <img src="{{ p.image.url }}" class="img-md"></a>
+                        <figcaption class="info-wrap">
+                          <a href="{{ p.get_absolute_url }}" class="title">{{ p.name }}</a>
+                          <div class="price-wrap mb-3">
+                              <span class="price-new">￥{{ p.price }}</span>
+                              {% if p.price_old %}
+                                <del class="price-old">￥{{ p.price }}
+                              {% endif %}
+                            </del>
+                          </div> <!-- price-wrap.// -->
+                        </figcaption>
+                    </figure> <!-- card-product // -->
+                  </div> <!-- col.// -->
+              {% endfor %}
+            </div> <!-- card-body.// -->
+          </div> <!-- card.// -->
+        {% endif %}
+      </aside> <!-- col // -->
+  
+
+      </div><!-- row.// -->
+</div>
+</section>
+
+{% endblock %}

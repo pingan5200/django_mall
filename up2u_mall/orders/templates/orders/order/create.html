@@ -1,0 +1,92 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+  订单结算页
+{% endblock %}
+
+{% block mystyle %}
+ 
+{% endblock %}
+{% block content %}
+<section class="section-content bg padding-y-sm">
+    <div class="container">
+        <main class="card py-5 ">
+
+        <div class="text-center">
+            <h2>订单信息</h2>
+            <p class="lead">请填写收货地址，并核对订单</p>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-4 order-md-1 mb-4 px-lg-5">
+              <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">已选商品</span>
+                <span class="badge badge-secondary badge-pill">{{cart|length}}</span>
+              </h4>
+              <ul class="list-group mb-3">
+                  {% for item in cart %}
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 class="my-0">{{ item.product.name }}</h6>
+                    <small class="text-muted">x {{ item.quantity }} 件</small>
+                  </div>
+                  <span class="text-muted">${{ item.total_price }}</span>
+                </li>
+                {% endfor %}
+
+                {% if cart.coupon %}
+                  <li class="list-group-item d-flex justify-content-between bg-light">
+                      <div class="text-success">
+                        <h6 class="my-0">优惠码</h6>
+                        <small>{{ cart.coupon.code }}</small>
+                      </div>
+                      <span class="text-success">-￥{{ cart.get_discount |floatformat:"2" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span>总额</span>
+                      <strong>￥{{ cart.get_total_price_after_discount |floatformat:"2" }}</strong>
+                    </li>
+                {% else %}
+                
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                  <div class="text-success">
+                    <h6 class="my-0">优惠码</h6>
+                    <small>无</small>
+                  </div>
+                  <span class="text-success">-￥0</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>总额</span>
+                  <strong>￥{{ cart.get_total_price |floatformat:"2" }}</strong>
+                </li>
+
+                {% endif %}
+              </ul>
+              <form class="card p-2" action="{% url 'coupons:apply' %}" method="post">
+                  <div class="input-group">
+                    <!-- <input type="text" class="form-control" placeholder="优惠码"> -->
+                    {{ coupon_form }}
+                    {% csrf_token %}
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-secondary">优了个惠</button>
+                    </div>
+                  </div>
+              </form>
+
+            </div>
+            <div class="col-md-8 order-md-2 text-center px-lg-5">
+              <h4 class="mb-3">收货信息</h4>
+              <form action="." method="post" class="order-form">
+                  <!-- {{ form.as_p }}
+                   -->
+                  {% csrf_token %}
+                  {% include 'orders/order/base_form.html' %}
+                  <p><input type="submit" class="btn btn-primary btn-lg btn-block" value="提交订单"></p>
+                </form>
+            </div>
+          </div>
+          
+          </main>
+        </div>
+</section>
+{% endblock %}
